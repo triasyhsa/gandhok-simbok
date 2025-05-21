@@ -26,6 +26,19 @@
     box-shadow: 0 4px 10px rgba(198, 40, 40, 0.5);
     user-select: none;
   }
+  #slogan {
+    text-align: center;
+    font-size: 1.4em;
+    margin-top: 15px;
+    color: #b71c1c;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  #slogan span {
+    color: #c62828;
+    font-weight: 700;
+    font-style: italic;
+  }
   .menu {
     display: flex;
     flex-wrap: wrap;
@@ -59,7 +72,7 @@
     margin: 0 0 12px;
     color: #7f1d1d;
   }
-  select, button {
+  select, button, textarea {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
@@ -74,7 +87,8 @@
     background: #fff0f0;
     color: #7f1d1d;
   }
-  select:hover, select:focus {
+  select:hover, select:focus,
+  textarea:hover, textarea:focus {
     background: #fceaea;
     outline: none;
   }
@@ -179,14 +193,42 @@
     background-color: #c62828;
     border-radius: 10px;
   }
+  /* Catatan */
+  #note-section {
+    max-width: 520px;
+    margin: 0 auto 40px auto;
+    background: #fff0f0;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 15px rgba(198, 40, 40, 0.3);
+  }
+  #note-section label {
+    font-weight: 600;
+    color: #7f1d1d;
+    display: block;
+    margin-bottom: 10px;
+  }
+  #note-section textarea {
+    font-weight: 400;
+    resize: vertical;
+    min-height: 80px;
+  }
 </style>
 </head>
 <body>
 
 <header>Gandhok Simbok</header>
+<div id="slogan">
+  <p>Rasanya Nampol, <span>Pedesnya Nagih!</span></p>
+</div>
 
 <section class="menu" id="menu">
   <!-- Menu items akan dimasukkan JS -->
+</section>
+
+<section id="note-section">
+  <label for="order-note">Catatan untuk Pesanan (misal: level pedas, tambahan, dll):</label>
+  <textarea id="order-note" placeholder="Tulis catatan di sini..."></textarea>
 </section>
 
 <section id="cart">
@@ -257,6 +299,7 @@
   const orderButtons = document.getElementById("order-buttons");
   const whatsappOrderLink = document.getElementById("whatsapp-order");
   const paymentMethodDiv = document.getElementById("payment-method");
+  const orderNote = document.getElementById("order-note");
 
   let cart = [];
 
@@ -282,14 +325,15 @@
 
   function addToCart(id) {
     const item = menuData.find(m => m.id === id);
-    const selectVariant = document.getElementById(`variant-${id}`);
-    const selectedVariant = selectVariant.value;
+    const variantSelect = document.getElementById(`variant-${id}`);
+    const variant = variantSelect.value;
 
-    const cartItem = cart.find(c => c.id === id && c.variant === selectedVariant);
-    if (cartItem) {
-      cartItem.qty++;
+    // Check if item with same variant already in cart
+    const cartItemIndex = cart.findIndex(c => c.id === id && c.variant === variant);
+    if (cartItemIndex > -1) {
+      cart[cartItemIndex].qty += 1;
     } else {
-      cart.push({ ...item, qty: 1, variant: selectedVariant });
+      cart.push({ id: id, name: item.name, variant: variant, price: item.price, qty: 1 });
     }
     renderCart();
   }
@@ -299,16 +343,7 @@
     renderCart();
   }
 
-  function getSelectedPayment() {
-    const radios = document.getElementsByName('payment');
-    for (const radio of radios) {
-      if (radio.checked) return radio.value;
-    }
-    return "Cash";
-  }
-
   function renderCart() {
-    cartList.innerHTML = "";
     if (cart.length === 0) {
       cartList.innerHTML = "<li>Keranjang kosong</li>";
       cartTotal.textContent = "";
@@ -317,19 +352,20 @@
       return;
     }
 
+    cartList.innerHTML = "";
     let total = 0;
-    cart.forEach((item, index) => {
+    cart.forEach((item, i) => {
+      total += item.price * item.qty;
       const li = document.createElement("li");
       li.innerHTML = `
-        <button class="remove-btn" title="Hapus item" onclick="removeFromCart(${index})">&times;</button>
+        <button class="remove-btn" title="Hapus item" onclick="removeFromCart(${i})">&times;</button>
         <span>${item.name} (${item.variant}) x ${item.qty}</span>
-        <span>Rp${(item.price * item.qty).toLocaleString()}</span>
+        <strong>Rp${(item.price * item.qty).toLocaleString()}</strong>
       `;
       cartList.appendChild(li);
-      total += item.price * item.qty;
     });
+    cartTotal.textContent = "Total: Rp" + total.toLocaleString();
 
-    cartTotal.textContent = `Total: Rp${total.toLocaleString()}`;
     orderButtons.style.display = "flex";
     paymentMethodDiv.style.display = "block";
 
@@ -337,29 +373,34 @@
   }
 
   function updateWhatsappLink() {
-    let message = `Halo Gandhok Simbok! Saya mau pesan:\n`;
+    if (cart.length === 0) return;
+
+    const paymentRadio = document.querySelector('input[name="payment"]:checked');
+    const paymentMethod = paymentRadio ? paymentRadio.value : "Cash";
+
+    let message = `Halo Gandhok Simbok,%0ASaya ingin pesan:%0A`;
     cart.forEach(item => {
-      message += `- ${item.name} (${item.variant}) x${item.qty}\n`;
+      message += `- ${item.name} (${item.variant}) x ${item.qty} = Rp${(item.price * item.qty).toLocaleString()}%0A`;
     });
+    message += `Total: Rp${cart.reduce((a, c) => a + c.price * c.qty, 0).toLocaleString()}%0A`;
+    if(orderNote.value.trim() !== ""){
+      message += `Catatan: ${encodeURIComponent(orderNote.value.trim())}%0A`;
+    }
+    message += `Metode Pembayaran: ${paymentMethod}%0A%0ATerima kasih!`;
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    message += `Total: Rp${total.toLocaleString()}\n`;
-
-    const payment = getSelectedPayment();
-    message += `Metode Pembayaran: ${payment}\nTerima kasih!`;
-
-    whatsappOrderLink.href = `https://wa.me/62${waNumber.slice(1)}?text=${encodeURIComponent(message)}`;
+    whatsappOrderLink.href = `https://wa.me/${waNumber}?text=${message}`;
   }
 
-  document.getElementsByName('payment').forEach(radio => {
-    radio.addEventListener('change', updateWhatsappLink);
-  });
+  // Update link tiap kali note atau pembayaran diubah
+  orderNote.addEventListener("input", updateWhatsappLink);
+  paymentMethodDiv.addEventListener("change", updateWhatsappLink);
 
   renderMenu();
   renderCart();
 
-  window.addToCart = addToCart;
+  // Buat fungsi removeFromCart accessible di global scope
   window.removeFromCart = removeFromCart;
+  window.addToCart = addToCart;
 </script>
 
 </body>
