@@ -1,82 +1,122 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Gandhok Simbok - Warung Makan</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
   body {
-    font-family: Arial, sans-serif;
-    background: #fff6f6;
-    color: #8b0000;
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    color: #7f1d1d;
     margin: 0;
     padding: 20px;
   }
   header {
     text-align: center;
-    background-color: #d32f2f;
-    color: white;
-    padding: 15px 0;
-    font-size: 2em;
-    font-weight: bold;
+    background-color: #c62828;
+    color: #fff;
+    padding: 20px 0;
+    font-size: 2.5em;
+    font-weight: 600;
+    letter-spacing: 2px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(198, 40, 40, 0.5);
+    user-select: none;
   }
   .menu {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
+    gap: 20px;
+    margin: 30px 0;
   }
   .menu-item {
-    background: white;
-    border: 2px solid #d32f2f;
-    border-radius: 8px;
-    width: 240px;
-    padding: 10px;
+    background: #fff0f0;
+    border-radius: 12px;
+    width: 260px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(198, 40, 40, 0.2);
     text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+  .menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(198, 40, 40, 0.35);
   }
   .menu-item h3 {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
+    font-weight: 600;
+    font-size: 1.5em;
+    color: #a91a1a;
   }
-  .menu-item select, .menu-item button {
-    margin-top: 8px;
+  .menu-item p {
+    font-weight: 600;
+    font-size: 1.15em;
+    margin: 0 0 12px;
+    color: #7f1d1d;
+  }
+  select, button {
     width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #d32f2f;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #c62828;
     font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  .menu-item button {
-    background: #d32f2f;
+  select {
+    margin-bottom: 12px;
+    cursor: pointer;
+    background: #fff0f0;
+    color: #7f1d1d;
+  }
+  select:hover, select:focus {
+    background: #fceaea;
+    outline: none;
+  }
+  button {
+    background-color: #c62828;
     color: white;
     border: none;
     cursor: pointer;
   }
-  .menu-item button:hover {
-    background: #b71c1c;
+  button:hover {
+    background-color: #8e1b1b;
   }
   #cart {
-    background: white;
-    border: 2px solid #d32f2f;
-    border-radius: 8px;
-    padding: 15px;
-    max-width: 500px;
-    margin: 0 auto 40px auto;
+    background: #fff0f0;
+    border-radius: 14px;
+    padding: 25px;
+    max-width: 520px;
+    margin: 0 auto 50px auto;
+    box-shadow: 0 6px 15px rgba(198, 40, 40, 0.3);
   }
   #cart h2 {
     margin-top: 0;
     text-align: center;
+    font-weight: 700;
+    color: #a91a1a;
+    letter-spacing: 1.5px;
   }
   #cart-list {
     list-style: none;
     padding: 0;
-    margin: 10px 0;
+    margin: 20px 0 15px 0;
+    max-height: 240px;
+    overflow-y: auto;
   }
   #cart-list li {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid #ddd;
+    padding: 10px 5px;
+    border-bottom: 1px solid #e6b8b8;
     align-items: center;
+    font-weight: 600;
+    color: #6b0f0f;
   }
   #cart-list li span {
     flex-grow: 1;
@@ -84,41 +124,60 @@
     text-align: left;
   }
   #cart-total {
-    font-weight: bold;
+    font-weight: 700;
     text-align: right;
-    margin-top: 10px;
+    font-size: 1.2em;
+    color: #7f1d1d;
   }
   #payment-method {
-    margin-top: 15px;
+    margin-top: 20px;
     text-align: center;
+    font-weight: 600;
+    color: #7f1d1d;
   }
   #payment-method label {
-    margin: 0 15px;
+    margin: 0 20px;
     cursor: pointer;
   }
   #order-buttons {
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
+    margin-top: 30px;
   }
   #order-buttons a, #order-buttons button {
-    background: #d32f2f;
+    background: #c62828;
     color: white;
     text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-weight: bold;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.1em;
     cursor: pointer;
+    box-shadow: 0 6px 12px rgba(198, 40, 40, 0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
   #order-buttons a:hover, #order-buttons button:hover {
-    background: #b71c1c;
+    background-color: #8e1b1b;
+    box-shadow: 0 8px 16px rgba(142, 27, 27, 0.7);
   }
   button.remove-btn {
     background: none;
     border: none;
-    color: #d32f2f;
-    font-size: 20px;
+    color: #c62828;
+    font-size: 22px;
     cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  button.remove-btn:hover {
+    color: #8e1b1b;
+  }
+  /* Scrollbar untuk keranjang */
+  #cart-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  #cart-list::-webkit-scrollbar-thumb {
+    background-color: #c62828;
+    border-radius: 10px;
   }
 </style>
 </head>
@@ -144,8 +203,8 @@
   </div>
 
   <div id="order-buttons" style="display:none;">
-    <a href="#" id="whatsapp-order" target="_blank">Pesan via WhatsApp</a>
-    <a href="https://gofood.link/a/PQXft4o" target="_blank">Order via GoFood</a>
+    <a href="#" id="whatsapp-order" target="_blank" rel="noopener noreferrer">Pesan via WhatsApp</a>
+    <a href="https://gofood.link/a/PQXft4o" target="_blank" rel="noopener noreferrer">Order via GoFood</a>
   </div>
 </section>
 
@@ -207,7 +266,6 @@
       const div = document.createElement("div");
       div.classList.add("menu-item");
 
-      // buat option variant
       let variantOptions = item.variants.map(v => `<option value="${v}">${v}</option>`).join("");
 
       div.innerHTML = `
@@ -227,7 +285,6 @@
     const selectVariant = document.getElementById(`variant-${id}`);
     const selectedVariant = selectVariant.value;
 
-    // cari item di cart berdasarkan id + variant
     const cartItem = cart.find(c => c.id === id && c.variant === selectedVariant);
     if (cartItem) {
       cartItem.qty++;
@@ -247,7 +304,7 @@
     for (const radio of radios) {
       if (radio.checked) return radio.value;
     }
-    return "Cash"; // default
+    return "Cash";
   }
 
   function renderCart() {
@@ -294,7 +351,6 @@
     whatsappOrderLink.href = `https://wa.me/62${waNumber.slice(1)}?text=${encodeURIComponent(message)}`;
   }
 
-  // Update link WA saat user ganti metode pembayaran
   document.getElementsByName('payment').forEach(radio => {
     radio.addEventListener('change', updateWhatsappLink);
   });
