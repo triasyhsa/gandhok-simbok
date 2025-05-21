@@ -291,7 +291,7 @@
     }
   ];
 
-  const waNumber = "085725750069";
+  const waNumber = "+62857-2575-0069";
 
   const menuContainer = document.getElementById("menu");
   const cartList = document.getElementById("cart-list");
