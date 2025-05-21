@@ -268,7 +268,7 @@
     {
       id: 2,
       name: "Krispi Celup",
-      price: 12000,
+      price: 13000,
       variants: [
         "Saos Judes",
         "Saus Keju",
@@ -291,7 +291,7 @@
     }
   ];
 
-  const waNumber = "085712028101";
+  const waNumber = "085725750069";
 
   const menuContainer = document.getElementById("menu");
   const cartList = document.getElementById("cart-list");
